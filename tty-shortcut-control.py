@@ -1,30 +1,52 @@
 #!/usr/bin/python3
-"""One-switch X11 shortcut settings for this machine."""
+"""One-switch X11 shortcut settings with per-user mapping backup."""
 import os
 import subprocess
 import sys
 from pathlib import Path
 
 AUTOSTART = Path.home() / '.config/autostart/tty-shortcut-control.desktop'
-ORIGINAL = 'F1 F1 F1 F1 F1 F1 XF86Switch_VT_1 F1 F1 XF86Switch_VT_1'
+BACKUP = Path.home() / '.config/tty-shortcut-control/original-f1.txt'
+
+
+def mapping():
+    result = subprocess.run(['/usr/bin/xmodmap', '-pke'], check=True,
+                            capture_output=True, text=True)
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) > 3 and parts[0] == 'keycode' and parts[2] == '=':
+            if 'XF86Switch_VT_1' in parts[3:] or parts[3] == 'F1':
+                return line.strip()
+    raise RuntimeError('Could not find the F1 key mapping.')
 
 
 def apply(enabled):
     if os.environ.get('XDG_SESSION_TYPE') == 'wayland':
         raise RuntimeError('This setting requires an X11 session.')
-    subprocess.run(['/usr/bin/xmodmap', '-e', 'keycode 67 = ' +
-                    (ORIGINAL if enabled else ' '.join(['F1'] * 10))],
+    current = mapping()
+    if enabled:
+        if 'XF86Switch_VT_1' in current.split():
+            return
+        if not BACKUP.exists():
+            raise RuntimeError('No original F1 mapping was saved. Log out and back in to restore your session defaults.')
+        target = BACKUP.read_text().strip()
+        if not target.startswith('keycode ') or 'XF86Switch_VT_1' not in target.split():
+            raise RuntimeError('The saved F1 mapping is invalid.')
+    else:
+        if 'XF86Switch_VT_1' not in current.split():
+            if not BACKUP.exists():
+                raise RuntimeError('F1 is already remapped. Log out and back in before disabling it with this app.')
+            return
+        BACKUP.parent.mkdir(parents=True, exist_ok=True)
+        BACKUP.write_text(current + '\n')
+        target = ' '.join('F1' if value == 'XF86Switch_VT_1' else value
+                          for value in current.split())
+    subprocess.run(['/usr/bin/xmodmap', '-e', target],
                    check=True, capture_output=True, text=True)
 
 
 def is_enabled():
-    result = subprocess.run(['/usr/bin/xmodmap', '-pke'], check=True,
-                            capture_output=True, text=True)
-    for line in result.stdout.splitlines():
-        parts = line.split()
-        if len(parts) > 2 and parts[:2] == ['keycode', '67']:
-            return 'XF86Switch_VT_1' in parts[3:]
-    raise RuntimeError('Could not find the F1 key mapping.')
+    return 'XF86Switch_VT_1' in mapping().split()
 
 
 def save(enabled):

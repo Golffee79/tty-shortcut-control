@@ -6,47 +6,42 @@ A compact GTK app to enable or disable **Ctrl + Alt + F1** switching to TTY1, wi
 
 ![TTY Shortcut Control screenshot](docs/screenshot.png)
 
-## Features / คุณสมบัติ
+## Install with APT / ติดตั้งผ่าน APT
 
-- One toggle: **On** allows switching to TTY1; **Off** disables the shortcut.
-- Changes take effect immediately, with no Save button.
-- When disabled, a per-user autostart entry reapplies the setting after login.
-- Turning it on restores this machine's original F1 mapping and removes the autostart entry.
-- สวิตช์เดียว เปิด–ปิดได้ทันที ไม่ต้องกดบันทึก และจำการปิดไว้หลังล็อกอินครั้งถัดไป
+Add this third-party repository once on each machine, then install by package name. This project is not part of the official Linux Mint / Debian repositories.
+
+เพิ่มแหล่งแพ็กเกจครั้งแรกในแต่ละเครื่อง จากนั้นติดตั้งและอัปเดตผ่าน APT ได้ตามปกติ
+
+```bash
+sudo apt update
+sudo apt install curl ca-certificates
+sudo install -d -m 755 /etc/apt/keyrings
+curl -fsSL https://raw.githubusercontent.com/Golffee79/tty-shortcut-control/main/apt/keyring.gpg -o /tmp/tty-shortcut-control-keyring.gpg
+sudo install -m 644 /tmp/tty-shortcut-control-keyring.gpg /etc/apt/keyrings/tty-shortcut-control.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/tty-shortcut-control.gpg] https://raw.githubusercontent.com/Golffee79/tty-shortcut-control/main/apt ./' | sudo tee /etc/apt/sources.list.d/tty-shortcut-control.list
+sudo apt update
+sudo apt install tty-shortcut-control
+```
+
+Launch **TTY Shortcut Control** from the applications menu, or run `tty-shortcut-control`. Run the app as your normal user, without sudo.
+
+เปิดจากเมนูแอป หรือพิมพ์ `tty-shortcut-control` โดยไม่ใช้ sudo
+
+Updates / อัปเดต:
+
+```bash
+sudo apt update
+sudo apt install --only-upgrade tty-shortcut-control
+```
 
 ## Requirements / สิ่งที่ต้องมี
 
-- Linux with an **X11** desktop session. Wayland is not supported.
-- Python 3, PyGObject, GTK 3 and `xmodmap`.
-- Built and checked on **LMDE 7 (Linux Mint Debian Edition)**.
+- Linux with an **X11** desktop session; Wayland is not supported.
+- Python 3, PyGObject, GTK 3 and xmodmap (installed automatically by APT).
+- Built and checked on **LMDE 7 (Linux Mint Debian Edition)**. Other desktop environments have not been tested.
+- แอปตรวจรหัสปุ่ม F1 และสำรองค่าของเครื่องนั้นก่อนปิดคีย์ลัด รองรับเฉพาะ X11
 
-**Compatibility:** This app uses keycode **67** for F1 and a fixed original mapping from the development machine. Check that your keyboard uses the same mapping before using it on another machine:
-
-```bash
-xmodmap -pke | grep -E '^keycode +67 '
-```
-
-แอปนี้ออกแบบสำหรับ X11 และใช้รหัสปุ่ม F1 ของเครื่องต้นฉบับ หากนำไปใช้เครื่องอื่น ควรตรวจสอบรหัสและการจับคู่ปุ่มก่อน
-
-## Install and run / ติดตั้งและเปิดแอป
-
-On Linux Mint / Debian, install the dependencies:
-
-```bash
-sudo apt install python3 python3-gi gir1.2-gtk-3.0 x11-xserver-utils git
-```
-
-Download and open the app:
-
-```bash
-git clone https://github.com/Golffee79/tty-shortcut-control.git
-cd tty-shortcut-control
-/usr/bin/python3 tty-shortcut-control.py
-```
-
-Keep the project at the same path while automatic disabling is enabled. The autostart entry points to the script's location.
-
-หากปิดคีย์ลัดไว้ อย่าย้ายหรือลบโฟลเดอร์โปรเจกต์ เพราะระบบจะเรียกสคริปต์จากตำแหน่งนี้เมื่อล็อกอิน
+The original mapping is saved at `~/.config/tty-shortcut-control/original-f1.txt`.
 
 ## Usage / วิธีใช้
 
@@ -55,23 +50,55 @@ Keep the project at the same path while automatic disabling is enabled. The auto
 | **On / เปิดใช้งาน** | Ctrl + Alt + F1 switches to TTY1 / ใช้คีย์ลัดสลับไปหน้าคอนโซลได้ |
 | **Off / ปิดใช้งาน** | Stops this shortcut from switching to TTY1 / ปิดการสลับหน้าจอด้วยคีย์ลัดนี้ |
 
-Changes apply to the current user's X11 session. Other TTY shortcuts are not changed. The normal F1 key remains available.
+Changes take effect immediately. Disabling creates a per-user autostart entry to reapply the setting after login. Enabling restores the saved F1 mapping and removes the entry. Other TTY shortcuts and the normal F1 key remain available.
 
-การตั้งค่ามีผลกับเซสชัน X11 ของผู้ใช้ปัจจุบัน ปุ่ม F1 ปกติยังใช้ได้ และไม่เปลี่ยนคีย์ลัด TTY ปุ่มอื่น
+เปลี่ยนค่าแล้วมีผลทันที ไม่ต้องกด Save เมื่อปิดคีย์ลัด แอปจะจำค่าหลังล็อกอิน ปุ่ม F1 ปกติและคีย์ลัด TTY ปุ่มอื่นยังใช้งานได้
 
-## Restore or remove / คืนค่าและลบแอป
+Desktop keyboard-layout changes can reset the mapping during a session. If that happens, reopen the app and disable the shortcut again.
 
-First open the app and turn the toggle **On**. This restores the shortcut and removes:
+## Run from source / เปิดจากซอร์สโค้ด
 
-```text
-~/.config/autostart/tty-shortcut-control.desktop
+```bash
+sudo apt install python3 python3-gi gir1.2-gtk-3.0 x11-xserver-utils git
+git clone https://github.com/Golffee79/tty-shortcut-control.git
+cd tty-shortcut-control
+/usr/bin/python3 tty-shortcut-control.py
 ```
 
-You can then remove the project folder. If you cannot open the app, restore the original mapping used by this project manually:
+Keep the script at the same path while automatic disabling is enabled.
+
+## Moving from the old manual installation / เปลี่ยนจากแอปเก่า
+
+Turn the old app's toggle **On** and close it before switching to the package. If the applications menu still opens the old version, remove its launcher:
+
+```bash
+rm -f ~/.local/share/applications/tty-shortcut-control.desktop
+```
+
+เปิดสวิตช์ On ในแอปเก่าแล้วปิดหน้าต่างก่อนใช้แพ็กเกจ หากเมนูยังเปิดแอปเก่า ให้ลบ launcher เก่าด้วยคำสั่งข้างต้น
+
+## Restore or uninstall / คืนค่าและถอนการติดตั้ง
+
+First turn the toggle **On** to restore the original mapping and remove the autostart entry, then uninstall:
+
+```bash
+sudo apt remove tty-shortcut-control
+```
+
+If you cannot open the app, remove the autostart entry, then log out and back in to restore session defaults:
 
 ```bash
 rm -f ~/.config/autostart/tty-shortcut-control.desktop
-xmodmap -e "keycode 67 = F1 F1 F1 F1 F1 F1 XF86Switch_VT_1 F1 F1 XF86Switch_VT_1"
 ```
 
-ก่อนลบแอป ให้เปิดสวิตช์ **On** เพื่อคืนค่าคีย์ลัดและนำรายการเริ่มอัตโนมัติออกก่อน
+ก่อนลบแอป ให้เปิดสวิตช์ **On** เพื่อคืนค่า หากเปิดแอปไม่ได้ ให้ลบรายการเริ่มอัตโนมัติ แล้วล็อกเอาต์และเข้าใหม่
+
+## Build a release / สร้างแพ็กเกจ
+
+Install `dpkg-dev`, `apt-utils`, and `gnupg`. Use a dedicated private signing key directory outside this repository:
+
+```bash
+GNUPGHOME=/path/to/private-signing-key scripts/build-release.sh 0.2.0
+```
+
+The script builds a .deb, package indexes and signed APT metadata in `apt/`. Commit these public artifacts to publish an update. Keep the private signing key outside the repository.

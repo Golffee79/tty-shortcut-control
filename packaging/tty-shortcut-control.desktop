@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=TTY Shortcut Control
+Name[th]=ตั้งค่าคีย์ลัด TTY
+Comment=Enable or disable Ctrl+Alt+F1
+Comment[th]=เปิดหรือปิดคีย์ลัด Ctrl+Alt+F1
+Exec=tty-shortcut-control
+Icon=tty-shortcut-control
+Terminal=false
+Categories=Settings;Utility;

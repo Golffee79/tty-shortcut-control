@@ -1,0 +1,29 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Thu, 15 Oct 2026 08:55:53 +0000
+Label: TTY-Shortcut-Control
+Origin: Golffee79
+MD5Sum:
+ 02febd5c02e1351073271e2b5aa421c5              696 Packages
+ 7c96f8629d1ee5dc1f33fe23a08d24fc              491 Packages.gz
+ 75a3c2b7c08d58d60f5b147c37574624               84 Release
+SHA1:
+ 445d380206144c399b776a1efb8a813ccded7034              696 Packages
+ 88cc76310bc04a25009ab84354cb4726e3ac39d8              491 Packages.gz
+ 8f496142cc7b2ef9b57e0d52e6d0ff3cb0f126e6               84 Release
+SHA256:
+ 347390b95ae242621f48d49c6ec4aa6641f16bb040a4a8e6c27556a60fdd3bc7              696 Packages
+ 41c3bf86f3b25d4fe0e2fdbf9224d956c53714c269eec05903aaaa357ff21877              491 Packages.gz
+ 92ded18363fc35ef6b5bd999530910172f69a281c4af97028f0a69349e92da42               84 Release
+SHA512:
+ 85b0569138d163286044c307164d21cd0c69b58510d318ee2d6f133ad33b3adfef368c669ef0427afdc881807d6caecb95436068fd45e316f595154e841b4b24              696 Packages
+ 163a59b83a2ef37fa2851c7b6b5bccd462e84b6c2f8d9b94369fa869cb7ca4edc15894aedfe65f1561e712bdd71180ee65fded698032bcf972e6e0a244c7b262              491 Packages.gz
+ 1342a26137fa6005fe9cdeb661a4a86c77316b19d978e453d0b855299e6db3b516c74e38210dd6a9131dfc1bccb886b8c68bad43a2c3900f5d8843218704fdac               84 Release
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRPRPu3NSM/4xPHc+B6mwP+giVS3AUCatCVGQAKCRB6mwP+giVS
+3GmaAQCTPhfKUAgV4JGLSzQCg6iDAdOYQVGplwr7vGMxC//sUQEA5J64lcw+DcYI
+OmSt2n5ZX2nh9CQsnoVOh/QqLyedDQo=
+=ad4L
+-----END PGP SIGNATURE-----

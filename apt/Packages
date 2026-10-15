@@ -1,0 +1,17 @@
+Package: tty-shortcut-control
+Version: 0.2.0
+Architecture: all
+Maintainer: Golffee79 <126460491+Golffee79@users.noreply.github.com>
+Depends: python3, python3-gi, gir1.2-gtk-3.0, x11-xserver-utils
+Filename: ./tty-shortcut-control_0.2.0_all.deb
+Size: 6024
+MD5sum: c013919d0dda1f25f0fab1360a05c234
+SHA1: 3711a9b14bf2f6fdb8d31a7b8d6aa5a67161b236
+SHA256: 2e56dfac47e039500b8998196d823939f4c0af83d42d36ab2c2eb6667829b35c
+Section: utils
+Priority: optional
+Homepage: https://github.com/Golffee79/tty-shortcut-control
+Description: One-switch Ctrl+Alt+F1 control for X11
+ Compact GTK utility with English and Thai labels, automatic saving,
+ and a per-user backup of the original F1 mapping. Requires X11.
+
